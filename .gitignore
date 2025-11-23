@@ -1,0 +1,7 @@
+*.swp
+aports/
+cache*/
+out/
+profile/repo
+profile/apk/wipi-rootfs/rootfs.tar.gz
+src/config.override.sh

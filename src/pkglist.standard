@@ -1,0 +1,62 @@
+# Core Packages
+alpine-base
+alpine-baselayout
+alpine-baselayout-data
+alpine-keys
+apk-tools
+busybox busybox-doc
+ca-certificates-bundle
+musl
+openrc
+openssl
+cryptsetup
+sfdisk
+lsblk
+grub
+grub-bios
+grub-efi
+xorriso
+mtools
+efibootmgr
+initrdbo
+pciutils
+alpine-sdk
+kmod
+shadow
+umount
+
+#--------------------------------#
+
+# System
+
+## Administration Tools
+doas
+openssh
+curl wget
+gpg
+patch
+7zip
+e2fsprogs dosfstools
+xz zstd zip unzip gzip
+rsync
+diffutils
+tmux tmux-doc
+wireless-tools
+vim
+
+## Suspend/Hibernate
+acpid zzz
+
+## Memory
+# earlyoom zram-init
+
+## Network
+iwd wpa_supplicant dhcpcd
+openvpn wireguard-tools
+
+## Docs
+mandoc man-pages
+
+## Configuration
+wipi-conf
+ncurses-terminfo
