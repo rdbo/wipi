@@ -46,10 +46,10 @@ wireless-tools
 vim
 
 ## Suspend/Hibernate
-acpid zzz
+# acpid zzz
 
 ## Memory
-# earlyoom zram-init
+earlyoom zram-init
 
 ## Network
 iwd wpa_supplicant dhcpcd

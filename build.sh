@@ -19,17 +19,12 @@ doas -u "$BUILD_USER" -- ./src/setup_apks.sh
 echo "[*] Building local repository..."
 doas -u "$BUILD_USER" -- ./src/build_repo.sh
 
-# Skip making squashfs if rootfs.squashfs is found
-if [ ! -e "$SQUASHFS_PATH" ]; then
-	# Make squashfs
-	echo "[*] Making squashfs..."
-	./src/make_squashfs.sh
-else
-	echo "[*] Skipped making squashfs, file '$SQUASHFS_PATH' exists"
-fi
+# Make filesystem
+echo "[*] Making filesystem..."
+./src/make_filesystem.sh
 
 # Build ISO
-echo "[*] Making ISO..."
-./src/make_iso.sh
+echo "[*] Making disk image..."
+./src/make_image.sh
 
 echo "[*] Build finished successfully"
