@@ -19,6 +19,7 @@ xorriso
 mtools
 efibootmgr
 initrdbo
+rpi-boot
 pciutils
 alpine-sdk
 kmod

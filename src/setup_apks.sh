@@ -8,6 +8,14 @@ if [ ! -d "$APKTEMP_DIR/initrdbo" ]; then
 	abuild checksum
 fi
 
+# rpi-boot
+if [ ! -d "$APKTEMP_DIR/rpi-boot" ]; then
+	mkdir -p "$APKTEMP_DIR/rpi-boot"
+	cp -r "$APK_DIR/rpi-boot/." "$APKTEMP_DIR/rpi-boot/."
+	cd "$APKTEMP_DIR/rpi-boot"
+	abuild checksum
+fi
+
 # wipi-conf
 if [ ! -d "$APKTEMP_DIR/wipi-conf" ]; then
 	mkdir -p "$APKTEMP_DIR/wipi-conf/"
