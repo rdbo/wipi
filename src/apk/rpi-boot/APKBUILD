@@ -18,13 +18,15 @@ build() {
 package() {
 	local wrkdir="$srcdir/$pkgname-$_commit"
 	install -D "$wrkdir/boot/." "$pkgdir/boot/"
-
-	# Raspberry Pi 4B uses kernel8.img
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "kernel*.img" ! -name "kernel8.img" -delete
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.dtb" ! -name "bcm2711-rpi-4-b.dtb" -delete
-
 	install -D "$wrkdir/extra/." "$pkgdir/boot/"
 	install -D "$wrkdir"/modules/*v8+ "$pkgdir/usr/lib/modules/"
+
+	# Raspberry Pi 4B uses kernel8.img; clean up files that are unused
+	find "$pkgdir/boot/" -type f -maxdepth 1 -name "kernel*.img" ! -name "kernel8.img" -delete
+	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.dtb" ! -name "bcm2711-rpi-4-b.dtb" -delete
+	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.symvers" ! -name "Module8.symvers" -delete
+	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.map" ! -name "System8.map"-delete
+	find "$pkgdir/boot/" -type f -maxdepth 1 -name "uname_string*" ! -name "uname_string8"-delete
 
 	# Generate kernel release to trigger initramfs generator
 	mkdir -p "$pkgdir/usr/share/kernel/wipi"
