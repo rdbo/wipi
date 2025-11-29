@@ -1,6 +1,5 @@
-# Contributor: Rdbo
+# Contributor: Rdbo <rdbodev@gmail.com>
 # Maintainer: Rdbo <rdbodev@gmail.com>
-
 pkgname="wipi-conf"
 pkgver="1.0"
 pkgrel=0
