@@ -2,59 +2,65 @@
 
 set -e
 
-# The "$BOOT_DIR" will contain kernel, initramfs, kernel config, modules, etc
-# so we don't have to do any aditional setup here
-mkdir -p "$ISO_DIR" "$ISO_DIR/boot"
-cp -r "$BOOT_DIR/." "$ISO_DIR/boot/."
+# Avoid issues in case a previous 'make_image' run failed
+mkdir -p "$MOUNT_DIR"
+umount "$MOUNT_DIR" || true
 
-# Copy squashfs to ISO dir
-cp "$SQUASHFS_PATH" "$ISO_DIR/rootfs.squashfs"
+# Calculate sizes for the disk image
+boot_size_mb=512
+boot_size="$((boot_size_mb * 1024 * 1024))"
+boot_size_min="$(du -sb "$BOOT_DIR" | cut -f1)"
+echo "Minimum boot size: $(numfmt --to=iec --suffix=B "$boot_size_min")"
+echo "Boot size: $(numfmt --to=iec --suffix=B "$boot_size")"
+if [ $boot_size -lt $boot_size_min ]; then
+	echo "[!] Boot size too small! Make adjustments in 'make_image.sh'"
+	exit 1
+fi
 
-# Copy GRUB wallpaper to /boot/grub
-cp "$SRC_DIR/grub_wallpaper.png" "$ISO_DIR/boot/grub/wallpaper.png"
+root_size_min="$(du -sb "$FILESYSTEM_DIR" | cut -f1)"
+root_size_mb=2048
+root_size="$((root_size_mb * 1024 * 1024))"
+echo "Minimum root size: $(numfmt --to=iec --suffix=B "$root_size_min")"
+echo "Root size: $(numfmt --to=iec --suffix=B "$root_size")"
+if [ $root_size -lt $root_size_min ]; then
+	echo "[!] Root size too small! Make adjustments in 'make_image.sh'"
+	exit 1
+fi
 
-# Copy GRUB config to ISO dir
-# NOTE: The vt.* kernel parameters are used for changing the virtual terminal (VT) theme
-# Sane defaults:
-# default_red: 0x00,0xaa,0x00,0xaa,0x00,0xaa,0x00,0xaa,0x55,0xff,0x55,0xff,0x55,0xff,0x55,0xff
-# default_grn: 0x00,0x00,0xaa,0x55,0x00,0x00,0xaa,0xaa,0x55,0x55,0xff,0xff,0x55,0x55,0xff,0xff
-# default_blu: 0x00,0x00,0x00,0x00,0xaa,0xaa,0xaa,0xaa,0x55,0x55,0x55,0x55,0xff,0xff,0xff,0xff
-# NOTE: The VT color table is not in order!
-#       From 'drivers/tty/vt/vt.c':
-#       ```
-#       const unsigned char color_table[] = { 0, 4, 2, 6, 1, 5, 3, 7,
-#				              8,12,10,14, 9,13,11,15 };
-#       ```
-#       This means that color "3" will actually be mapped to the RGB indices of color "6", for
-#       example.
-vt_default_red=0x10,0xaa,0x00,0xaa,0x00,0xaa,0x00,0xaa,0x55,0xff,0x55,0xff,0x55,0xff,0x00,0xff
-vt_default_grn=0x1a,0x00,0xaa,0x55,0x00,0x00,0xaa,0xaa,0x55,0x55,0xff,0xff,0x55,0x55,0xff,0xff
-vt_default_blu=0x20,0x00,0x00,0x00,0xaa,0xaa,0xaa,0xaa,0x55,0x55,0x55,0x55,0xff,0xff,0xc8,0xff
+disk_size_mb=$((boot_size_mb + root_size_mb + 16)) # Extra 16MB for partition things
+disk_size=$((disk_size_mb * 1024 * 1024))
+echo "Disk size: $(numfmt --to=iec --suffix=B "$disk_size")"
 
-# Get kernel and initramfs names
-vmlinuz="$(ls "$BOOT_DIR/" | grep "^vmlinuz" | tail -1)"
-initramfs="$(ls "$BOOT_DIR" | grep "^initramfs" | tail -1)"
+# Create disk image file
+echo "[*] Creating disk..."
+dd if=/dev/zero of="$IMG_PATH" count="$disk_size_mb" bs=1M
 
-cat <<- EOF > "$ISO_DIR/boot/grub/grub.cfg"
-set timeout=5
+# Setup disk partitions
+disk_dev="$(losetup --show -fP "$IMG_PATH")"
+echo "Disk device: $disk_dev"
+echo "label: mbr" | sfdisk -f "$disk_dev"
+echo ", ${boot_size_mb}M, w95_fat32_lba" | sfdisk -f "$disk_dev" # boot
+echo ", , linux" | sfdisk -a -f "$disk_dev" # root
+boot_part="${disk_dev}p0"
+root_part="${disk_dev}p1"
 
-insmod all_video
-loadfont /boot/grub/fonts/unicode.pf2
+boot_label="$PROFILENAME-boot" # NOTE: up to 11 chars long!
+mkfs.fat -F32 -n "$boot_label" "$boot_part"
 
-insmod gfxterm
-set gfxmode=640x480
-terminal_output gfxterm
+root_label="$PROFILENAME-root"
+mkfs.ext4 -L "$root_label" "$root_part"
 
-insmod png
-background_image /boot/grub/wallpaper.png
+# Setup boot partition
+mount -t fat32 "$boot_part" "$MOUNT_DIR"
+cp -r "$BOOT_DIR/." "$MOUNT_DIR/."
+printf "console=serial0,115200 console=tty1 root=LABEL="$root_label" rootfstype=ext4 fsck.repair=yes rootwait resize" > "$MOUNT_DIR/cmdline.txt"
+cp "$SRC_DIR/config.txt" "$MOUNT_DIR/"
+umount "$MOUNT_DIR"
 
-menuentry "$SYSNAME" {
-	echo "Loading vmlinuz..."
-	linux /boot/$vmlinuz root=LABEL=$ISO_VOLID rootfstype=iso9660 rd.live=/rootfs.squashfs vt.color=0x0B vt.default_red=$vt_default_red vt.default_grn=$vt_default_grn vt.default_blu=$vt_default_blu splash
-	echo "Loading initrd..."
-	initrd /boot/$initramfs
-}
-EOF
+# Setup root partition
+mount -t ext4 "$root_part" "$MOUNT_DIR"
+cp -r "$FILESYSTEM_DIR/." "$MOUNT_DIR/."
+umount "$MOUNT_DIR"
 
-# Build ISO
-grub-mkrescue "$ISO_DIR" -o "$ISO_PATH" -volid "$ISO_VOLID"
+# Detach loop device
+losetup -d "$disk_dev"

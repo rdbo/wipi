@@ -11,8 +11,6 @@ options="!check"
 _commit="55c0555f30b4ff1ad20a3dd4db535b0d013c0a40"
 source="
 	$pkgname-$pkgver.tar.gz::https://github.com/raspberrypi/firmware/archive/$_commit.tar.gz
-	config.txt
-	cmdline.txt
 	"
 
 build() {

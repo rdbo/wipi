@@ -18,9 +18,8 @@ export PKG_PROFILE="standard"
 export BOOT_DIR="$CACHE_DIR/boot"
 export FILESYSTEM_DIR="$CACHE_DIR/root"
 export FIRMWARE_DIR="$CACHE_DIR/firmware"
-export ISO_DIR="$CACHE_DIR/iso"
-export ISO_PATH="$CACHE_DIR/$PROFILENAME-os.iso"
-export ISO_VOLID="wipi-os-cdrom"
+export MOUNT_DIR="$CACHE_DIR/mnt"
+export IMG_PATH="$CACHE_DIR/$PROFILENAME-os.img"
 
 # Allow overriding the default variables through a
 # separate script, which is added to gitignore
@@ -45,9 +44,9 @@ echo " - REPOS_FILE: $REPOS_FILE"
 echo " - PKG_PROFILE: $PKG_PROFILE"
 echo " - FILESYSTEM_DIR: $FILESYSTEM_DIR"
 echo " - FIRMWARE_DIR: $FIRMWARE_DIR"
-echo " - ISO_DIR: $ISO_DIR"
-echo " - ISO_PATH: $ISO_PATH"
-echo " - ISO_VOLID: $ISO_VOLID"
+echo " - IMG_DIR: $IMG_DIR"
+echo " - IMG_PATH: $IMG_PATH"
+echo " - IMG_VOLID: $IMG_VOLID"
 
 mkdir -p "$CACHE_DIR"
 chmod 777 "$CACHE_DIR" # Allow read-write for build user
