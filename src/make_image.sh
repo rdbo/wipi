@@ -19,7 +19,7 @@ if [ $boot_size -lt $boot_size_min ]; then
 fi
 
 root_size_min="$(du -sb "$FILESYSTEM_DIR" | cut -f1)"
-root_size_mb=2048
+root_size_mb=512
 root_size="$((root_size_mb * 1024 * 1024))"
 echo "Minimum root size: $(numfmt --to=iec --suffix=B "$root_size_min")"
 echo "Root size: $(numfmt --to=iec --suffix=B "$root_size")"
