@@ -4,7 +4,7 @@ set -e
 
 # Avoid issues in case a previous 'make_image' run failed
 mkdir -p "$MOUNT_DIR"
-umount "$MOUNT_DIR" || true
+umount "$MOUNT_DIR" > /dev/null 2>&1 || true
 
 # Calculate sizes for the disk image
 echo "[*] Calculating partition sizes..."
@@ -43,6 +43,7 @@ echo "Disk device: $disk_dev"
 echo "label: mbr" | sfdisk -f "$disk_dev"
 echo ", ${boot_size_mb}M, w95_fat32_lba" | sfdisk -f "$disk_dev" # boot
 echo ", , linux" | sfdisk -a -f "$disk_dev" # root
+sync
 boot_part="${disk_dev}p1"
 root_part="${disk_dev}p2"
 
@@ -53,14 +54,14 @@ root_label="$PROFILENAME-root"
 mkfs.ext4 -L "$root_label" "$root_part"
 
 # Setup boot partition
-mount -t fat32 "$boot_part" "$MOUNT_DIR"
+mount "$boot_part" "$MOUNT_DIR"
 cp -r "$BOOT_DIR/." "$MOUNT_DIR/."
 printf "console=serial0,115200 console=tty1 root=LABEL="$root_label" rootfstype=ext4 fsck.repair=yes rootwait resize" > "$MOUNT_DIR/cmdline.txt"
 cp "$SRC_DIR/config.txt" "$MOUNT_DIR/"
 umount "$MOUNT_DIR"
 
 # Setup root partition
-mount -t ext4 "$root_part" "$MOUNT_DIR"
+mount "$root_part" "$MOUNT_DIR"
 cp -r "$FILESYSTEM_DIR/." "$MOUNT_DIR/."
 umount "$MOUNT_DIR"
 

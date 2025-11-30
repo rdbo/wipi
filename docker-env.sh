@@ -35,4 +35,4 @@ echo "[*] Building Dockerfile..."
 docker build -t wipi .
 
 echo "[*] Starting Docker environment..."
-docker run --privileged -v "$(pwd):/app" --workdir /app -it wipi sh
+docker run --privileged -v "$(pwd):/app" -v /dev:/dev --workdir /app -it wipi sh
