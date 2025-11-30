@@ -155,6 +155,7 @@ if [ ! -e "$FILESYSTEM_DIR/home/user" ]; then
 fi
 # passwd -R "$FILESYSTEM_DIR" -d user
 chroot "$FILESYSTEM_DIR" sh -c 'printf "user:pass" | chpasswd'
+chroot "$FILESYSTEM_DIR" sh -c 'printf "root:toor" | chpasswd'
 
 # Merge user patches (https://alpinelinux.org/posts/2025-10-01-usr-merge.html)
 # NOTE: Only run this if there are binaries in /bin and /sbin directly.
