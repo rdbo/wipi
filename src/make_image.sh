@@ -62,7 +62,7 @@ umount "$MOUNT_DIR"
 
 # Setup root partition
 mount "$root_part" "$MOUNT_DIR"
-cp -r "$FILESYSTEM_DIR/." "$MOUNT_DIR/."
+cp -a "$FILESYSTEM_DIR/." "$MOUNT_DIR/."
 umount "$MOUNT_DIR"
 
 # Detach loop device
