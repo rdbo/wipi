@@ -44,9 +44,5 @@ echo " - REPOS_FILE: $REPOS_FILE"
 echo " - PKG_PROFILE: $PKG_PROFILE"
 echo " - FILESYSTEM_DIR: $FILESYSTEM_DIR"
 echo " - FIRMWARE_DIR: $FIRMWARE_DIR"
-echo " - IMG_DIR: $IMG_DIR"
+echo " - MOUNT_DIR: $MOUNT_DIR"
 echo " - IMG_PATH: $IMG_PATH"
-echo " - IMG_VOLID: $IMG_VOLID"
-
-mkdir -p "$CACHE_DIR"
-chmod 777 "$CACHE_DIR" # Allow read-write for build user

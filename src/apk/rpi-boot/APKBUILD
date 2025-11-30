@@ -5,12 +5,12 @@ pkgver="1.0_git$(date +"%Y%m%d")"
 pkgrel=0
 pkgdesc="Stubs for booting the Raspberry Pi (Bootloader, DTBs, Kernel, Modules)"
 url="https://github.com/raspberrypi/firmware"
-arch="noarch"
+arch="aarch64"
 license="Broadcom,GPL-2.0"
-options="!check"
+options="!check !strip"
 _commit="55c0555f30b4ff1ad20a3dd4db535b0d013c0a40"
 source="
-	$pkgname-$pkgver.tar.gz::https://github.com/raspberrypi/firmware/archive/$_commit.tar.gz
+	firmware-$_commit.tar.gz::https://github.com/raspberrypi/firmware/archive/$_commit.tar.gz
 	"
 
 build() {
@@ -18,19 +18,21 @@ build() {
 }
 
 package() {
-	local wrkdir="$srcdir/$pkgname-$_commit"
-	install -D "$wrkdir/boot/." "$pkgdir/boot/"
-	install -D "$wrkdir/extra/." "$pkgdir/boot/"
-	install -D "$wrkdir"/modules/*v8+ "$pkgdir/usr/lib/modules/"
+	local wrkdir="$srcdir/firmware-$_commit"
+	local libdir="$pkgdir/lib" # Using /lib because merge-usr compliancy was breaking things
+	mkdir -p "$pkgdir/boot" "$libdir/modules"
+	cp -R "$wrkdir/boot/." "$pkgdir/boot/"
+	cp -R "$wrkdir/extra/." "$pkgdir/boot/"
+	cp -R "$wrkdir"/modules/*v8+ "$libdir/modules/"
 
 	# Raspberry Pi 4B uses kernel8.img; clean up files that are unused
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "kernel*.img" ! -name "kernel8.img" -delete
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.dtb" ! -name "bcm2711-rpi-4-b.dtb" -delete
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.symvers" ! -name "Module8.symvers" -delete
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "*.map" ! -name "System8.map"-delete
-	find "$pkgdir/boot/" -type f -maxdepth 1 -name "uname_string*" ! -name "uname_string8"-delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "kernel*.img" ! -name "kernel8.img" -delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.dtb" ! -name "bcm2711-rpi-4-b.dtb" -delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.symvers" ! -name "Module8.symvers" -delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.map" ! -name "System8.map"-delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "uname_string*" ! -name "uname_string8"-delete
 
 	# Generate kernel release to trigger initramfs generator
 	mkdir -p "$pkgdir/usr/share/kernel/wipi"
-	ls "$pkgdir/usr/lib/modules" | head -n 1 > "$pkgdir/usr/share/kernel/wipi/kernel.release"
+	ls "$libdir/modules" | head -n 1 > "$pkgdir/usr/share/kernel/wipi/kernel.release"
 }

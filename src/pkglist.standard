@@ -12,23 +12,23 @@ openssl
 cryptsetup
 sfdisk
 lsblk
-grub
-grub-bios
-grub-efi
-xorriso
 mtools
 efibootmgr
 initrdbo
 rpi-boot
 pciutils
-alpine-sdk
 kmod
 shadow
 umount
+losetup
+coreutils
 
 #--------------------------------#
 
 # System
+
+## Core
+eudev seatd
 
 ## Administration Tools
 doas
@@ -36,9 +36,8 @@ openssh
 curl wget
 gpg
 patch
-7zip
+7zip tar xz zstd zip unzip gzip
 e2fsprogs dosfstools
-xz zstd zip unzip gzip
 rsync
 diffutils
 tmux tmux-doc

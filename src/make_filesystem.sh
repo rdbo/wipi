@@ -26,6 +26,10 @@ mount --rbind "$BOOT_DIR" "$FILESYSTEM_DIR/boot"
 pkgs="$(cat "$SRC_DIR/pkglist.$PKG_PROFILE" | sed 's/#.*//g' | tr '\n' ' ')"
 echo "Packages: $pkgs"
 
+# Overwrite initrdbo module config
+mkdir -p "$FILESYSTEM_DIR/etc/initrdbo.d"
+cp "$SRC_DIR/initramfs_modules" "$FILESYSTEM_DIR/etc/initrdbo.d/base.modules"
+
 # Skip installing APKs if APK database is already set up
 if [ ! -d "$FILESYSTEM_DIR/etc/apk" ]; then
 	# Initialize APK database
@@ -140,13 +144,15 @@ rc_add earlyoom default
 rc_add iwd default
 rc_add dbus default
 rc_add seatd default
-rc_add bluetooth default
+# rc_add bluetooth default
 
 rc_add local default # used for start scripts
 rc_add sshd default # Access device remotely (headless)
 
 # Setup regular user
-useradd -R "$FILESYSTEM_DIR" -s /bin/bash -m -G wheel,audio,input,video,seat user
+if [ ! -e "$FILESYSTEM_DIR/home/user" ]; then
+	useradd -R "$FILESYSTEM_DIR" -s /bin/bash -m -G wheel,audio,input,video,seat user
+fi
 # passwd -R "$FILESYSTEM_DIR" -d user
 chroot "$FILESYSTEM_DIR" sh -c 'printf "user:pass" | chpasswd'
 

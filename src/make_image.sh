@@ -7,6 +7,7 @@ mkdir -p "$MOUNT_DIR"
 umount "$MOUNT_DIR" || true
 
 # Calculate sizes for the disk image
+echo "[*] Calculating partition sizes..."
 boot_size_mb=512
 boot_size="$((boot_size_mb * 1024 * 1024))"
 boot_size_min="$(du -sb "$BOOT_DIR" | cut -f1)"
@@ -36,13 +37,14 @@ echo "[*] Creating disk..."
 dd if=/dev/zero of="$IMG_PATH" count="$disk_size_mb" bs=1M
 
 # Setup disk partitions
+echo "[*] Setting up partitions..."
 disk_dev="$(losetup --show -fP "$IMG_PATH")"
 echo "Disk device: $disk_dev"
 echo "label: mbr" | sfdisk -f "$disk_dev"
 echo ", ${boot_size_mb}M, w95_fat32_lba" | sfdisk -f "$disk_dev" # boot
 echo ", , linux" | sfdisk -a -f "$disk_dev" # root
-boot_part="${disk_dev}p0"
-root_part="${disk_dev}p1"
+boot_part="${disk_dev}p1"
+root_part="${disk_dev}p2"
 
 boot_label="$PROFILENAME-boot" # NOTE: up to 11 chars long!
 mkfs.fat -F32 -n "$boot_label" "$boot_part"
@@ -63,4 +65,5 @@ cp -r "$FILESYSTEM_DIR/." "$MOUNT_DIR/."
 umount "$MOUNT_DIR"
 
 # Detach loop device
+echo "[*] Detaching loop device..."
 losetup -d "$disk_dev"
