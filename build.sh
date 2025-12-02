@@ -15,6 +15,11 @@ echo "[*] Running config..."
 echo "[*] Setting up cache directory..."
 mkdir -p "$CACHE_DIR"
 chmod 777 "$CACHE_DIR" # Allow read-write for build user
+if [ ! -d "$CACHE_DIR/apkcache" ]; then
+	echo "[*] Setting up APK cache..."
+	mkdir -p "$CACHE_DIR/apkcache" # Allow caching of alpine packages
+	apk update
+fi
 
 # Setup APKs and build local repository
 echo "[*] Setting up APKs..."

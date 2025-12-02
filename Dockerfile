@@ -18,4 +18,7 @@ RUN abuild-keygen -i -a -n
 
 USER root
 
+# Setup apkcache
+RUN ln -s /app/cache/apkcache /etc/apk/cache
+
 CMD ["/bin/sh", "./build.sh"]
