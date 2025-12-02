@@ -151,7 +151,7 @@ rc_add sshd default # Access device remotely (headless)
 
 # Setup regular user
 if [ ! -e "$FILESYSTEM_DIR/home/user" ]; then
-	useradd -R "$FILESYSTEM_DIR" -s /bin/bash -m -G wheel,audio,input,video,seat user
+	useradd -R "$FILESYSTEM_DIR" -s /bin/bash -m -G wheel,audio,input,video,seat,dialout user
 fi
 # passwd -R "$FILESYSTEM_DIR" -d user
 chroot "$FILESYSTEM_DIR" sh -c 'printf "user:pass" | chpasswd'
