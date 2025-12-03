@@ -56,7 +56,7 @@ mkfs.ext4 -L "$root_label" "$root_part"
 # Setup boot partition
 mount "$boot_part" "$MOUNT_DIR"
 cp -r "$BOOT_DIR/." "$MOUNT_DIR/."
-printf "console=serial0,115200 console=tty1 root=LABEL="$root_label" rootfstype=ext4 fsck.repair=yes rootwait resize rd.persist_log" > "$MOUNT_DIR/cmdline.txt"
+printf "console=serial0,115200 console=tty1 root=LABEL="$root_label" rootfstype=ext4 fsck.repair=yes rootwait resize" > "$MOUNT_DIR/cmdline.txt"
 cp "$SRC_DIR/config.txt" "$MOUNT_DIR/"
 umount "$MOUNT_DIR"
 

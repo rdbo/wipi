@@ -163,14 +163,23 @@ chroot "$FILESYSTEM_DIR" sh -c 'printf "root:toor" | chpasswd'
 # chroot "$FILESYSTEM_DIR" merge-usr
 
 # Unmount filesystems
+# NOTE: For some reason, the initramfs is unable
+#       to create these directories during its
+#       initialization process. For that reason,
+#       they will remain created, unlike in
+#       Sigma Linux. We will also create additional
+#       directories that are mounted during the init.
 umount -R "$FILESYSTEM_DIR/proc"
-rm -rf "$FILESYSTEM_DIR/proc"
+# rm -rf "$FILESYSTEM_DIR/proc"
 
 umount -R "$FILESYSTEM_DIR/dev"
-rm -rf "$FILESYSTEM_DIR/dev"
+# rm -rf "$FILESYSTEM_DIR/dev"
 
 umount -R "$FILESYSTEM_DIR/boot"
-rm -rf "$FILESYSTEM_DIR/boot"
+# rm -rf "$FILESYSTEM_DIR/boot"
+
+rm -rf "$FILESYSTEM_DIR/tmp"
+mkdir -p "$FILESYSTEM_DIR/sys" "$FILESYSTEM_DIR/tmp"
 
 # Cleanup firmware files that are not used by any module
 # (they can be reinstalled through the `linux-firmware` pkg)
@@ -180,9 +189,7 @@ else
 	echo "[*] Cleaning up unused firmware in the filesystem..."
 	mv "$FILESYSTEM_DIR/lib/firmware" "$FIRMWARE_DIR"
 	mkdir -p "$FILESYSTEM_DIR/lib/firmware"
-	# TODO: Make sure that `modinfo` cannot fail. It mail fail due to
-	#       the host kernel not being the same as the installer kernel
-	find "$FILESYSTEM_DIR"/lib/modules -type f -name "*.ko*" | xargs modinfo -F firmware | sort -u | while read fw; do
+	chroot "$FILESYSTEM_DIR" find /lib/modules -type f -name "*.ko*" | chroot "$FILESYSTEM_DIR" xargs modinfo -F firmware | sort -u | while read fw; do
 		for fname in "$fw" "$fw.zst" "$fw.xz"; do
 			if [ -e "${FIRMWARE_DIR}/$fname" ]; then
 				install -pD "${FIRMWARE_DIR}/$fname" "$FILESYSTEM_DIR/lib/firmware/$fname"

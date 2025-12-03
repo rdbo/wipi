@@ -29,8 +29,8 @@ package() {
 	find "$pkgdir/boot/" -maxdepth 1 -type f -name "kernel*.img" ! -name "kernel8.img" -delete
 	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.dtb" ! -name "bcm2711-rpi-4-b.dtb" -delete
 	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.symvers" ! -name "Module8.symvers" -delete
-	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.map" ! -name "System8.map"-delete
-	find "$pkgdir/boot/" -maxdepth 1 -type f -name "uname_string*" ! -name "uname_string8"-delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "*.map" ! -name "System8.map" -delete
+	find "$pkgdir/boot/" -maxdepth 1 -type f -name "uname_string*" ! -name "uname_string8" -delete
 
 	# Generate kernel release to trigger initramfs generator
 	mkdir -p "$pkgdir/usr/share/kernel/wipi"
