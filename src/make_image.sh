@@ -47,11 +47,8 @@ sync
 boot_part="${disk_dev}p1"
 root_part="${disk_dev}p2"
 
-boot_label="$PROFILENAME-boot" # NOTE: up to 11 chars long!
-mkfs.fat -F32 -n "$boot_label" "$boot_part"
-
-root_label="$PROFILENAME-root"
-mkfs.ext4 -L "$root_label" "$root_part"
+mkfs.fat -F32 -n "$BOOT_LABEL" "$boot_part"
+mkfs.ext4 -L "$ROOT_LABEL" "$root_part"
 
 # Setup boot partition
 mount "$boot_part" "$MOUNT_DIR"

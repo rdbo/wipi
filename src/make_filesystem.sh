@@ -69,7 +69,10 @@ EOF
 
 echo "$PROFILENAME" > "$FILESYSTEM_DIR/etc/hostname"
 
-> "$FILESYSTEM_DIR/etc/fstab"
+cat <<- EOF > "$FILESYSTEM_DIR/etc/fstab"
+# device		mountpoint	fstype	options	dump	fsck
+LABEL=$BOOT_LABEL	/boot		vfat	rw	0	0
+EOF
 
 # Add default network interfaces configuration
 mkdir -p "$FILESYSTEM_DIR/etc/network"

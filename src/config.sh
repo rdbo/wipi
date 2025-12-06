@@ -19,6 +19,8 @@ export BOOT_DIR="$CACHE_DIR/boot"
 export FILESYSTEM_DIR="$CACHE_DIR/root"
 export FIRMWARE_DIR="$CACHE_DIR/firmware"
 export MOUNT_DIR="$CACHE_DIR/mnt"
+export BOOT_LABEL="$PROFILENAME-boot" # Up to 11 chars long!
+export ROOT_LABEL="$PROFILENAME-root"
 export IMG_PATH="$CACHE_DIR/$PROFILENAME-os.img"
 
 # Allow overriding the default variables through a
@@ -45,4 +47,6 @@ echo " - PKG_PROFILE: $PKG_PROFILE"
 echo " - FILESYSTEM_DIR: $FILESYSTEM_DIR"
 echo " - FIRMWARE_DIR: $FIRMWARE_DIR"
 echo " - MOUNT_DIR: $MOUNT_DIR"
+echo " - BOOT_LABEL: $BOOT_LABEL"
+echo " - ROOT_LABEL: $ROOT_LABEL"
 echo " - IMG_PATH: $IMG_PATH"
