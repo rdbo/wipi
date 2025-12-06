@@ -9,7 +9,12 @@ arch="noarch"
 license="AGPL-3.0"
 options="!check"
 source="rootfs.tar.gz"
-triggers="$pkgname-firmware-update.trigger=/lib/firmware/*"
+subpackages="$pkgname-fwfix"
+
+fwfix() {
+	triggers="$pkgname-fwfix.trigger=/lib/firmware/*"
+	mkdir -p "$subpkgdir"
+}
 
 build() {
 	return 0

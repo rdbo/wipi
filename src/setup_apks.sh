@@ -20,6 +20,7 @@ fi
 if [ ! -d "$APKTEMP_DIR/wipi-conf" ]; then
 	mkdir -p "$APKTEMP_DIR/wipi-conf/"
 	cp "$APK_DIR/wipi-conf/APKBUILD" "$APKTEMP_DIR/wipi-conf/"
+	cp "$APK_DIR/wipi-conf/"*.trigger "$APKTEMP_DIR/wipi-conf/"
 	cd "$APK_DIR/wipi-conf"
 	tar -czf "$APKTEMP_DIR/wipi-conf/rootfs.tar.gz" rootfs
 	cd "$APKTEMP_DIR/wipi-conf"

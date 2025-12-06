@@ -64,4 +64,5 @@ py3-gpiozero
 
 ## Configuration
 wipi-conf
+wipi-conf-fwfix
 ncurses-terminfo
