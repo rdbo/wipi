@@ -14,7 +14,8 @@ sfdisk
 lsblk
 mtools
 efibootmgr
-initrdbo
+linux-firmware-brcm
+wipi-conf-fwfix
 rpi-boot
 pciutils
 kmod
@@ -22,7 +23,7 @@ shadow
 umount
 losetup
 coreutils
-linux-firmware-brcm
+initrdbo
 
 #--------------------------------#
 
@@ -64,5 +65,4 @@ py3-gpiozero
 
 ## Configuration
 wipi-conf
-wipi-conf-fwfix
 ncurses-terminfo

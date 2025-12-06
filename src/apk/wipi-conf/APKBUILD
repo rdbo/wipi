@@ -13,6 +13,7 @@ subpackages="$pkgname-fwfix"
 
 fwfix() {
 	triggers="$pkgname-fwfix.trigger=/lib/firmware/*"
+	depends="$pkgname"
 	mkdir -p "$subpkgdir"
 }
 
