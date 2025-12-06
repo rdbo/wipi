@@ -9,6 +9,7 @@ arch="noarch"
 license="AGPL-3.0"
 options="!check"
 source="rootfs.tar.gz"
+triggers="$pkgname-firmware-update.trigger=/lib/firmware/*"
 
 build() {
 	return 0
