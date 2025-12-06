@@ -1,0 +1,9 @@
+#!/bin/sh
+
+find /lib/firmware -type f -name "*.zst" \
+	-exec zstd -d {} \; \
+	-exec rm {} \;
+find /lib/firmware -type l -name "*.zst" |
+        sed 's/[.]zst$//' |
+	xargs -r -I {} -- \
+		sh -c "readlink '{}.zst' | sed 's/[.]zst\$//' | xargs -r -I {2} -- sh -c 'ln -s \"{2}\" \"{}\"; rm \"{}\".zst'"
