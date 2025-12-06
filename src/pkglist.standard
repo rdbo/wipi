@@ -57,6 +57,10 @@ openvpn wireguard-tools
 ## Docs
 mandoc man-pages
 
+## Hardware Utilities
+libgpiod-dev
+py3-gpiozero
+
 ## Configuration
 wipi-conf
 ncurses-terminfo

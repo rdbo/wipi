@@ -1,0 +1,39 @@
+#!/bin/sh
+
+echo "[WiPi] LED Blink"
+if [ "$(id -u)" != "0" ]; then
+	echo "[!] Run as root"
+	exit 1
+fi
+
+read -p "[*] Connect your LED to the GPIO2 pin, then press [ENTER]..."
+
+gpio_num="$(cat /sys/kernel/debug/gpio | grep -E 'GPIO2\s' | cut -d ' ' -f2 | cut -d '-' -f 2)"
+gpio_iface="/sys/class/gpio/gpio${gpio_num}"
+if [ ! -e "$gpio_iface" ]; then
+	echo "[*] Exporting GPIO pin..."
+	echo "$gpio_num" > /sys/class/gpio/export
+fi
+
+echo "[*] Setting GPIO direction to 'out'..."
+echo "out" > "$gpio_iface/direction"
+
+echo "[*] Starting LED blink, press CTRL-C to stop..."
+sleep 1
+
+trap handle_signal INT
+handle_signal() {
+	echo "[CTRL-C] detected, terminating..."
+	echo 0 > "$gpio_iface/value"
+	echo "$gpio_num" > /sys/class/gpio/unexport
+	exit 0
+}
+
+while :; do
+	echo 1 > "$gpio_iface/value"
+	echo "LED state: ON"
+	usleep 500000
+	echo 0 > "$gpio_iface/value"
+	echo "LED state: OFF"
+	usleep 500000
+done
