@@ -30,6 +30,12 @@ echo "Packages: $pkgs"
 mkdir -p "$FILESYSTEM_DIR/etc/initrdbo.d"
 cp "$SRC_DIR/initramfs_modules" "$FILESYSTEM_DIR/etc/initrdbo.d/base.modules"
 
+# Overwite Alpine's baselayout default modules (ipv6 module not needed)
+mkdir -p "$FILEYSYSTEM_DIR/etc"
+cat <<- EOF > "$FILESYSTEM_DIR/etc/modules"
+af_packet
+EOF
+
 # Skip installing APKs if APK database is already set up
 if [ ! -d "$FILESYSTEM_DIR/etc/apk" ]; then
 	# Initialize APK database
