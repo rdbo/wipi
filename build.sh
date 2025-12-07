@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -20,6 +20,13 @@ chmod 777 "$CACHE_DIR" # Allow read-write for build user
 # 	mkdir -p "$CACHE_DIR/apkcache" # Allow caching of alpine packages
 # 	apk update
 # fi
+
+# Save logs in $LOG_FILE
+# exec 1> >(awk '{ printf "\033[0;32m[OUT] [%s]\033[0m %s\n", strftime("%Y-%m-%d %H:%M:%S"), $0 }' | tee -a "$LOG_FILE")
+# exec 2> >(awk '{ printf "\033[0;32m[ERR] [%s]\033[0m %s\n", strftime("%Y-%m-%d %H:%M:%S"), $0 }' | tee -a "$LOG_FILE" 1>&2)
+echo "[*] Setting up logging..."
+exec 1> >(awk '{ printf "\033[0;32m[%s]\033[0m %s\n", strftime("%Y-%m-%d %H:%M:%S"), $0 }' | tee -a "$LOG_FILE")
+exec 2> >(awk '{ printf "\033[0;32m[%s]\033[0m %s\n", strftime("%Y-%m-%d %H:%M:%S"), $0 }' | tee -a "$LOG_FILE" 1>&2)
 
 # Setup APKs and build local repository
 echo "[*] Setting up APKs..."
