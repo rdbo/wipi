@@ -189,22 +189,3 @@ umount -R "$FILESYSTEM_DIR/boot"
 
 rm -rf "$FILESYSTEM_DIR/tmp"
 mkdir -p "$FILESYSTEM_DIR/sys" "$FILESYSTEM_DIR/tmp"
-
-# Cleanup firmware files that are not used by any module
-# (they can be reinstalled through the `linux-firmware` pkg)
-if [ -e "$FIRMWARE_DIR" ]; then
-	echo "[*] Skipped firmware cleanup, '$FIRMWARE_DIR' exists"
-else
-	echo "[*] Cleaning up unused firmware in the filesystem..."
-	mv "$FILESYSTEM_DIR/lib/firmware" "$FIRMWARE_DIR"
-	mkdir -p "$FILESYSTEM_DIR/lib/firmware"
-	chroot "$FILESYSTEM_DIR" find /lib/modules -type f -name "*.ko*" | chroot "$FILESYSTEM_DIR" xargs modinfo -F firmware | sort -u | while read fw; do
-		for fname in "$fw" "$fw.zst" "$fw.xz"; do
-			if [ -e "${FIRMWARE_DIR}/$fname" ]; then
-				install -pD "${FIRMWARE_DIR}/$fname" "$FILESYSTEM_DIR/lib/firmware/$fname"
-				break
-			fi
-		done
-	done
-fi
-

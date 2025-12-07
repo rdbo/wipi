@@ -2,12 +2,16 @@
 
 ROOT_DIR="${1:-/}"
 
-find "$ROOT_DIR/lib/firmware" -type f -name "*.zst" \
-	-exec zstd -d {} \; \
-	-exec rm {} \;
+find "$ROOT_DIR/lib/firmware" -type f -name "*.zst" | while read -r module; do
+	echo "[*] Decompressing and removing module '$module'..."
+	zstd -d "$module"
+	rm "$module"
+done
+
 find "$ROOT_DIR/lib/firmware" -type l -name "*.zst" | while read -r symlink; do
 	new_symlink="$(printf "%s" "$symlink" | sed 's/[.]zst$//')"
 	target="$(readlink "$symlink" | sed 's/[.]zst$//')"
+	echo "[*] Removing '$symlink' and linking '$new_symlink' to '$target'..."
 	ln -s "$target" "$new_symlink"
 	rm "$symlink"
 done
