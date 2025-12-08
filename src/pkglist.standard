@@ -16,6 +16,7 @@ mtools
 efibootmgr
 linux-firmware-cypress
 linux-firmware-brcm
+linux-firmware-rtlwifi
 wipi-conf-fwfix
 rpi-boot
 pciutils
