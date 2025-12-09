@@ -150,7 +150,7 @@ rc_add hostname boot
 # rc_add zram-init boot # zram disabled by default. The OS is not supposed to need it.
 rc_add networking default # Sets up interfaces based on /etc/network/interfaces
 rc_add earlyoom default
-rc_add iwd default
+rc_add networkmanager default
 rc_add dbus default
 rc_add seatd default
 # rc_add bluetooth default
@@ -160,7 +160,7 @@ rc_add sshd default # Access device remotely (headless)
 
 # Setup regular user
 if [ ! -e "$FILESYSTEM_DIR/home/user" ]; then
-	useradd -R "$FILESYSTEM_DIR" -s /bin/bash -m -G wheel,audio,input,video,seat,dialout user
+	useradd -R "$FILESYSTEM_DIR" -s /bin/bash -m -G wheel,audio,input,video,seat,dialout,plugdev user
 fi
 # passwd -R "$FILESYSTEM_DIR" -d user
 chroot "$FILESYSTEM_DIR" sh -c 'printf "user:pass" | chpasswd'

@@ -55,8 +55,10 @@ vim
 earlyoom zram-init
 
 ## Network
-iwd wpa_supplicant dhcpcd
+wpa_supplicant dhcpcd
 openvpn wireguard-tools
+iw hostapd iproute2 dnsmasq
+networkmanager networkmanager-wifi networkmanager-wwan networkmanager-cli
 
 ## Docs
 mandoc man-pages
