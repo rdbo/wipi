@@ -58,7 +58,7 @@ earlyoom zram-init
 wpa_supplicant dhcpcd
 openvpn wireguard-tools
 iw hostapd iproute2 dnsmasq
-networkmanager networkmanager-wifi networkmanager-wwan networkmanager-cli
+networkmanager networkmanager-wifi networkmanager-wwan networkmanager-dnsmasq networkmanager-cli
 
 ## Docs
 mandoc man-pages
