@@ -2,6 +2,8 @@
 ## Fully configured router operating system for the Raspberry Pi 4B
 Based on [Sigma Linux](https://github.com/rdbo/sigma-linux)
 
+![wipi-logo](assets/LOGO.png)
+
 # License
 This project is licensed under the GNU AGPL-3.0 (no later versions allowed)
 
