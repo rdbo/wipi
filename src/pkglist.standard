@@ -33,6 +33,7 @@ initrdbo
 
 ## Core
 eudev seatd
+dbus glib
 
 ## Administration Tools
 doas
