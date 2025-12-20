@@ -48,6 +48,7 @@ diffutils
 tmux tmux-doc
 wireless-tools
 vim
+git
 
 ## Suspend/Hibernate
 # acpid zzz

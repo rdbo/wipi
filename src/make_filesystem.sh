@@ -157,6 +157,7 @@ rc_add seatd default
 
 rc_add local default # used for start scripts
 rc_add sshd default # Access device remotely (headless)
+rc_add ntpd default
 
 # Setup regular user
 if [ ! -e "$FILESYSTEM_DIR/home/user" ]; then
