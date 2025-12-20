@@ -49,6 +49,7 @@ tmux tmux-doc
 wireless-tools
 vim
 git
+cfdisk
 
 ## Suspend/Hibernate
 # acpid zzz
